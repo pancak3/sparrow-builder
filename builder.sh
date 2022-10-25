@@ -5,7 +5,9 @@ init() {
     echo "[*] init"
     mkdir -p sparrow
     cd sparrow
-    repo init -u https://github.com/AmbiML/sparrow-manifest -m camkes-manifest.xml
+    repo init \
+        -u https://github.com/AmbiML/sparrow-manifest \
+        -m camkes-manifest.xml
     repo sync -j$(nproc)
 }
 
@@ -16,7 +18,9 @@ init)
     init
     ;;
 scripts)
-    sh sparrow/scripts/$2 "${@:3}"
+    echo "[*] Run sparrow scripts"
+    cd sparrow
+    sh scripts/$2 "${@:3}"
     ;;
 *)
     echo "[!] TODO: help"

@@ -12,7 +12,11 @@ RUN apk add --no-cache openssh
 
 ## rust
 
-RUN curl -y --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs  > /tmp/install.sh
+RUN sh /tmp/install.sh -y
+RUN ln -s /root/.cargo/bin/cargo /usr/bin/cargo
+RUN ln -s /root/.cargo/bin/rustup /usr/bin/rustup
+RUN ln -s /root/.cargo/bin/rustc /usr/bin/rustc
 
 ## workspace
 RUN mkdir -p /workspace
@@ -25,5 +29,7 @@ RUN chmod a+rx /root/.bin/repo
 RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN ln -s /root/.bin/repo /usr/bin/repo
 
+## rust libs
+RUN rustup toolchain add nightly-2021-11-05
 
 # ENTRYPOINT ["sh", "/workspace/builder.sh"]
