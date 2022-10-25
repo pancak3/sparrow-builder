@@ -1,0 +1,3 @@
+[submodule "sparrow-manifest"]
+	path = sparrow-manifest
+	url = https://github.com/AmbiML/sparrow-manifest
