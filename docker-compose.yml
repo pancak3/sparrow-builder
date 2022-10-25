@@ -1,0 +1,8 @@
+services:
+  sparrow-builder:
+    build: .
+    image: sparrow-builder
+    container_name: sparrow-builder
+    volumes:
+      - .:/workspace
+      - ~/.gitconfig:/root/.gitconfig
