@@ -42,24 +42,41 @@ RUN pip3 install \
     --user \
     camkes-deps
 
+## arm gnu toolchain
+RUN apt-get install -y wget
+WORKDIR /root
+RUN wget --https-only \
+    "https://developer.arm.com/-/media/Files/downloads/gnu/11.2-2022.02/binrel/gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu.tar.xz"
+RUN tar xvf \
+    gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu.tar.xz \
+    && rm gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu.tar.xz
+
+ENV ENV_FILE="/etc/profile"
+RUN touch ${ENV_FILE}
+RUN echo \
+    "export PATH=/root/gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu/bin:\$PATH" \
+    >> ${ENV_FILE}
+WORKDIR /workspace
+
 ## rust libs
 RUN rustup toolchain add nightly-2021-11-05
-RUN rustup toolchain add nightly-aarch64-unknown-linux-gnu
 RUN rustup target add --toolchain \
     nightly-2021-11-05-x86_64-unknown-linux-gnu \
     aarch64-unknown-none
 
-### cmake deps
-RUN apt-get install -y binutils-aarch64-linux-gnu
-RUN apt-get install -y gcc-aarch64-linux-gnu
-RUN apt-get install -y g++-aarch64-linux-gnu
-
 ## Clean 
 # RUN apt-get autoremove -y
 # RUN rm -rf /var/lib/apt/lists/*
+# RUN rm -rf /var/lib/apt/lists/*
 
+## make deps
+RUN apt-get install -y device-tree-compiler
+RUN apt-get install -y libxml2-utils
+RUN curl -sSL https://get.haskellstack.org/ | sh
+RUN apt-get install -y cpio
 # Runtime ENV
 ## Python lib PATH
-RUN echo "export PATH=/root/.local/bin:\$PATH" >> /root/.profile
+RUN echo "export PATH=/root/.local/bin:\$PATH" >> ${ENV_FILE}
 
-# ENTRYPOINT ["sh", "/workspace/builder.sh"]
+# ENTRYPOINT ["bash", "-l", "/workspace/builder.sh"]
+# TODO: apt install qemu-system-arm qemu
